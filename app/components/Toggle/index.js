@@ -6,32 +6,52 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
-import Select from './Select';
-import ToggleOption from '../ToggleOption';
-
-function Toggle(props) {
-  let content = <option>--</option>;
-
-  // If we have items, render them
-  if (props.values) {
-    content = props.values.map(value => (
-      <ToggleOption key={value} value={value} message={props.messages[value]} />
-    ));
+const Border = styled.div`
+  width: 30px;
+  height: 30px;
+  // border: 5px solid black;
+  box-shadow: 0px 15px 30px 5px rgba(0, 0, 0, 0.1);
+  float: right;
+  &:hover {
+    box-shadow: 0px 15px 30px 15px rgba(0, 0, 0, 0.3);
+    color: white;
   }
-
+`;
+const LeftArrow = styled.i`
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  margin-left: 12px;
+  margin-top: 10px;
+`;
+const RigthArrow = styled.i`
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  margin-left: 12px;
+  margin-top: 10px;
+`;
+function Toggle(props) {
   return (
-    <Select value={props.value} onChange={props.onToggle}>
-      {content}
-    </Select>
+    <Border
+      onClick={() => props.changeIsLanguageBarOpen(!props.isLanguageBarOpen)}
+    >
+      {props.isLanguageBarOpen ? <RigthArrow /> : <LeftArrow />}
+    </Border>
   );
 }
 
 Toggle.propTypes = {
-  onToggle: PropTypes.func,
-  values: PropTypes.array,
-  value: PropTypes.string,
-  messages: PropTypes.object,
+  changeIsLanguageBarOpen: PropTypes.func,
+  isLanguageBarOpen: PropTypes.bool,
 };
 
 export default Toggle;

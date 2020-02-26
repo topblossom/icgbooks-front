@@ -12,6 +12,10 @@ export default defineMessages({
     id: `${scope}.home`,
     defaultMessage: 'Home',
   },
+  login: {
+    id: `${scope}.login`,
+    defaultMessage: 'Login',
+  },
   features: {
     id: `${scope}.features`,
     defaultMessage: 'Features',

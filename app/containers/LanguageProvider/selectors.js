@@ -17,4 +17,10 @@ const makeSelectLocale = () =>
     languageState => languageState.locale,
   );
 
-export { selectLanguage, makeSelectLocale };
+const makeSelectLanguageBar = () =>
+  createSelector(
+    selectLanguage,
+    languageState => languageState.isLanguageBarOpen,
+  );
+
+export { selectLanguage, makeSelectLocale, makeSelectLanguageBar };

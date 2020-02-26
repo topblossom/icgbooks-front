@@ -7,23 +7,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import { createStructuredSelector } from 'reselect';
 
 import Toggle from 'components/Toggle';
+import SliderDiv from 'components/SliderDiv';
 import Wrapper from './Wrapper';
 import messages from './messages';
 import { appLocales } from '../../i18n';
-import { changeLocale } from '../LanguageProvider/actions';
-import { makeSelectLocale } from '../LanguageProvider/selectors';
+import {
+  changeIsLanguageBarOpen,
+  changeLocale,
+} from '../LanguageProvider/actions';
+import {
+  makeSelectLanguageBar,
+  makeSelectLocale,
+} from '../LanguageProvider/selectors';
 
 export function LocaleToggle(props) {
   return (
     <Wrapper>
-      <Toggle
+      <SliderDiv
         value={props.locale}
         values={appLocales}
         messages={messages}
         onToggle={props.onLocaleToggle}
+        isLanguageBarOpen={props.isLanguageBarOpen}
+      />
+      <Toggle
+        changeIsLanguageBarOpen={props.changeIsLanguageBarOpen}
+        isLanguageBarOpen={props.isLanguageBarOpen}
       />
     </Wrapper>
   );
@@ -31,19 +43,22 @@ export function LocaleToggle(props) {
 
 LocaleToggle.propTypes = {
   onLocaleToggle: PropTypes.func,
+  changeIsLanguageBarOpen: PropTypes.func,
   locale: PropTypes.string,
+  isLanguageBarOpen: PropTypes.bool,
 };
 
-const mapStateToProps = createSelector(
-  makeSelectLocale(),
-  locale => ({
-    locale,
-  }),
-);
+const mapStateToProps = createStructuredSelector({
+  locale: makeSelectLocale(),
+  isLanguageBarOpen: makeSelectLanguageBar(),
+});
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onLocaleToggle: evt => dispatch(changeLocale(evt.target.value)),
+    onLocaleToggle: evt =>
+      dispatch(changeLocale(evt.currentTarget.textContent)),
+    changeIsLanguageBarOpen: isLanguageBarOpen =>
+      dispatch(changeIsLanguageBarOpen(!!isLanguageBarOpen)),
     dispatch,
   };
 }
