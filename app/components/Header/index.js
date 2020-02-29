@@ -53,8 +53,11 @@ function Header() {
         <NavLinkLeft to="/">
           <FormattedMessage {...messages.home} />
         </NavLinkLeft>
-        <NavLinkLeft to="/">
+        <NavLinkLeft to="/login">
           <FormattedMessage {...messages.login} />
+        </NavLinkLeft>
+        <NavLinkLeft to="/profile">
+          <FormattedMessage {...messages.profile} />
         </NavLinkLeft>
         <NavButtonRight>
           <LocaleToggle />

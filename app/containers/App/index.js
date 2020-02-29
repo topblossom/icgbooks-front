@@ -12,6 +12,8 @@ import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 
 import HomePage from 'containers/HomePage/Loadable';
+import Login from 'containers/Login/Loadable';
+import Profile from 'containers/Profile/Loadable';
 import FeaturePage from 'containers/FeaturePage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
@@ -30,7 +32,7 @@ export default function App() {
   return (
     <AppWrapper>
       <Helmet
-        titleTemplate="%s - React.js Boilerplate"
+        titleTemplate="%s - Bookshelf"
         defaultTitle="React.js Boilerplate"
       >
         <meta name="description" content="A React.js Boilerplate application" />
@@ -38,6 +40,8 @@ export default function App() {
       <Header />
       <Switch>
         <Route exact path="/" component={HomePage} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/profile" component={Profile} />
         <Route path="/features" component={FeaturePage} />
         <Route path="" component={NotFoundPage} />
       </Switch>
