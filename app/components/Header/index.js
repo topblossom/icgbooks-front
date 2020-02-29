@@ -26,7 +26,7 @@ const NavLinkLeft = styled(Link)`
   float: left;
   padding-top: 10px;
 `;
-const NavButtonRight = styled(Link)`
+const NavButtonRight = styled.div`
   float: right;
   padding: 10px;
 `;
