@@ -6,7 +6,7 @@
  * contain code that should be seen on all pages. (e.g. navigation bar)
  */
 
-import React from 'react';
+import React, { useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
@@ -19,7 +19,16 @@ import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
+import PropTypes from 'prop-types';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+
+import { useInjectReducer } from 'utils/injectReducer';
 import GlobalStyle from '../../global-styles';
+import { changeLoginStatus } from './actions';
+import { makeSelectLoggedIn } from './selectors';
+import reducer from './reducer';
 
 const AppWrapper = styled.div`
   margin: 0 auto;
@@ -28,7 +37,28 @@ const AppWrapper = styled.div`
   flex-direction: column;
 `;
 
-export default function App() {
+const key = 'app';
+
+export function App({ onChangeLoginStatus, isLoggedIn }) {
+  useInjectReducer({ key, reducer });
+  const header = new Headers({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  });
+  const sentData = {
+    method: 'get',
+    mode: 'cors',
+    header,
+  };
+  useEffect(() => {
+    fetch('http://icgbooks.sq4lea.olsztyn.pl/api/verify', sentData)
+      .then(response => response.json())
+      .then(loginStatus => {
+        console.log(loginStatus);
+        onChangeLoginStatus(loginStatus);
+      })
+      .catch(error => console.log(error));
+  });
   return (
     <AppWrapper>
       <Helmet
@@ -37,7 +67,7 @@ export default function App() {
       >
         <meta name="description" content="A React.js Boilerplate application" />
       </Helmet>
-      <Header />
+      <Header isLoggedIn={isLoggedIn} />
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/login" component={Login} />
@@ -50,3 +80,28 @@ export default function App() {
     </AppWrapper>
   );
 }
+
+App.propTypes = {
+  isLoggedIn: PropTypes.bool,
+  onChangeLoginStatus: PropTypes.func,
+};
+
+const mapStateToProps = createStructuredSelector({
+  isLoggedIn: makeSelectLoggedIn(),
+});
+
+export function mapDispatchToProps(dispatch) {
+  return {
+    onChangeLoginStatus: evt => dispatch(changeLoginStatus(evt.target.value)),
+  };
+}
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(
+  withConnect,
+  memo,
+)(App);
