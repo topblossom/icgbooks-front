@@ -48,14 +48,14 @@ export function App({ onChangeLoginStatus, isLoggedIn }) {
   const sentData = {
     method: 'get',
     mode: 'cors',
+    credentials: 'include',
     header,
   };
   useEffect(() => {
     fetch('http://icgbooks.sq4lea.olsztyn.pl/api/verify', sentData)
       .then(response => response.json())
       .then(loginStatus => {
-        console.log(loginStatus);
-        onChangeLoginStatus(loginStatus);
+        onChangeLoginStatus(loginStatus['am i in']);
       })
       .catch(error => console.log(error));
   });
@@ -92,7 +92,8 @@ const mapStateToProps = createStructuredSelector({
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onChangeLoginStatus: evt => dispatch(changeLoginStatus(evt.target.value)),
+    onChangeLoginStatus: loginStatus =>
+      dispatch(changeLoginStatus(loginStatus)),
   };
 }
 

@@ -42,7 +42,7 @@ const makeSelectLocation = () =>
 const makeSelectLoggedIn = () =>
   createSelector(
     selectGlobal,
-    globalState => globalState.loginStatus,
+    globalState => globalState.isLoggedIn,
   );
 
 export {

@@ -63,9 +63,9 @@ export function repoLoadingError(error) {
   };
 }
 
-export function changeLoginStatus(loginStatus) {
+export function changeLoginStatus(isLoggedIn) {
   return {
     type: IS_LOGGED_IN,
-    loginStatus,
+    isLoggedIn,
   };
 }
