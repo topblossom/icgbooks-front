@@ -28,4 +28,8 @@ export default defineMessages({
     id: `${scope}.features`,
     defaultMessage: 'Features',
   },
+  books: {
+    id: `${scope}.books`,
+    defaultMessage: 'Books',
+  },
 });
