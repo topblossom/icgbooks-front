@@ -32,4 +32,8 @@ export default defineMessages({
     id: `${scope}.books`,
     defaultMessage: 'Books',
   },
+  shelves: {
+    id: `${scope}.shelves`,
+    defaultMessage: 'Shelves',
+  },
 });

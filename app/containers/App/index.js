@@ -13,6 +13,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import HomePage from 'containers/HomePage/Loadable';
 import BookList from 'containers/BookList/Loadable';
+import ShelvesList from 'containers/Shelves/Loadable';
 import Login from 'containers/Login/Loadable';
 import Profile from 'containers/Profile/Loadable';
 import FeaturePage from 'containers/FeaturePage/Loadable';
@@ -72,6 +73,7 @@ export function App({ onChangeLoginStatus, isLoggedIn }) {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/books" component={BookList} />
+        <Route exact path="/shelves" component={ShelvesList} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/profile" component={Profile} />
         <Route path="/features" component={FeaturePage} />
