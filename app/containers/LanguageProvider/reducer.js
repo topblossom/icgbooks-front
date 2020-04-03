@@ -21,8 +21,7 @@ const languageProviderReducer = (state = initialState, action) =>
       case CHANGE_LOCALE:
         draft.locale = action.locale;
         break;
-    }
-    switch (action.type) {
+
       case IS_OPEN:
         draft.isLanguageBarOpen = action.isLanguageBarOpen;
         break;

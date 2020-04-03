@@ -5,15 +5,15 @@
  */
 import { defineMessages } from 'react-intl';
 
-export const scope = 'boilerplate.components.BookList';
+export const scope = 'boilerplate.components.Shelves';
 
 export default defineMessages({
   id: {
     id: `${scope}.id`,
     defaultMessage: 'ID',
   },
-  pages: {
-    id: `${scope}.pages`,
-    defaultMessage: 'Pages',
+  books: {
+    id: `${scope}.books`,
+    defaultMessage: 'Books amount',
   },
 });

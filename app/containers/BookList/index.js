@@ -15,14 +15,18 @@ import styled from 'styled-components';
 import messages from './messages';
 import { makeSelectListOfBooks } from './selectors';
 import { changeListOfBooks } from './actions';
+
 const Div = styled.div`
   position: relative;
   left: 45%;
+  width: 100vh;
 `;
 
 const Book = styled.div`
   padding-bottom: 50px;
+  width: 100vh;
 `;
+
 export function BookList({ listOfBooks, onChangeListOfBooks }) {
   const header = new Headers({
     'Access-Control-Allow-Origin': '*',

@@ -13,17 +13,28 @@ import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 import messages from './messages';
-import { makeSelectListOfShelves } from './selectors';
-import { changeListOfShelves } from './actions';
+import {
+  makeSelectListOfShelves,
+  makeSelectIsOpenAddWindow,
+} from './selectors';
+import { changeListOfShelves, changeIsOpenAddWindow } from './actions';
+import AddShelfWindow from '../../components/AddShelf';
 const Div = styled.div`
   position: relative;
   left: 45%;
+  width: 100vh;
 `;
 
 const Shelf = styled.div`
   padding-bottom: 50px;
+  width: 100vh;
 `;
-export function ShelvesList({ listOfShelves, onChangeListOfShelves }) {
+export function ShelvesList({
+  listOfShelves,
+  onChangeListOfShelves,
+  isOpenAddWindow,
+  onChangeIsOpenAddWindow,
+}) {
   const header = new Headers({
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -40,6 +51,30 @@ export function ShelvesList({ listOfShelves, onChangeListOfShelves }) {
       .then(resp => resp.json())
       .then(res => onChangeListOfShelves(res));
   }, []);
+  const dataPOST = data => ({
+    method: 'POST',
+    mode: 'cors',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: JSON.stringify({ name: data }),
+  });
+
+  function addShelf(event) {
+    event.preventDefault();
+    fetch(
+      'http://icgbooks.sq4lea.olsztyn.pl/api/shelves/add',
+      dataPOST(event.target.newShelf.value),
+    )
+      .then(() =>
+        fetch('http://icgbooks.sq4lea.olsztyn.pl/api/shelves', sentData)
+          .then(resp => resp.json())
+          .then(res => onChangeListOfShelves(res)),
+      )
+      .catch(error => error);
+  }
 
   return (
     <div>
@@ -49,19 +84,33 @@ export function ShelvesList({ listOfShelves, onChangeListOfShelves }) {
       </Helmet>
       <Div>
         {Array.isArray(listOfShelves) && listOfShelves.length ? (
-          listOfShelves.map((todo, index) => (
+          listOfShelves.map(todo => (
             <Shelf key={todo.id}>
-              <FormattedMessage {...messages.id} />: {index}
-              <h2>{todo.title}</h2>
+              <h2>{todo.name}</h2>
               <p>
-                <FormattedMessage {...messages.pages} />: {todo.pages}
+                <FormattedMessage {...messages.books} />: {todo.books.length}
               </p>
             </Shelf>
           ))
         ) : (
-          <div>You have not any shelves yet</div>
+          <div>You don’t have any shelves yet</div>
         )}
+        <button
+          type="submit"
+          onClick={() => onChangeIsOpenAddWindow(!isOpenAddWindow)}
+        >
+          Add shelf
+        </button>
       </Div>
+      {isOpenAddWindow ? (
+        <AddShelfWindow
+          addShelf={addShelf}
+          onChangeIsOpenAddWindow={onChangeIsOpenAddWindow}
+          isOpenAddWindow={isOpenAddWindow}
+        />
+      ) : (
+        <div />
+      )}
     </div>
   );
 }
@@ -69,16 +118,21 @@ export function ShelvesList({ listOfShelves, onChangeListOfShelves }) {
 ShelvesList.propTypes = {
   listOfShelves: PropTypes.array,
   onChangeListOfShelves: PropTypes.func,
+  isOpenAddWindow: PropTypes.bool,
+  onChangeIsOpenAddWindow: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
-  listOfBooks: makeSelectListOfShelves(),
+  listOfShelves: makeSelectListOfShelves(),
+  isOpenAddWindow: makeSelectIsOpenAddWindow(),
 });
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onChangeListOfBooks: listOfShelves =>
+    onChangeListOfShelves: listOfShelves =>
       dispatch(changeListOfShelves(listOfShelves)),
+    onChangeIsOpenAddWindow: isOpenAddWindow =>
+      dispatch(changeIsOpenAddWindow(!!isOpenAddWindow)),
   };
 }
 

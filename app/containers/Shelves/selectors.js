@@ -13,4 +13,10 @@ const makeSelectListOfShelves = () =>
     globalState => globalState.listOfShelves,
   );
 
-export { makeSelectListOfShelves };
+const makeSelectIsOpenAddWindow = () =>
+  createSelector(
+    selectGlobal,
+    globalState => globalState.isOpenAddWindow,
+  );
+
+export { makeSelectListOfShelves, makeSelectIsOpenAddWindow };
