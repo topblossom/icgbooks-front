@@ -10,6 +10,8 @@ import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 import messages from './messages';
@@ -21,13 +23,14 @@ import { changeListOfShelves, changeIsOpenAddWindow } from './actions';
 import AddShelfWindow from '../../components/AddShelf';
 const Div = styled.div`
   position: relative;
-  left: 45%;
-  width: 100vh;
+  left: 5%;
+  width: 90%;
 `;
 
 const Shelf = styled.div`
   padding-bottom: 50px;
   width: 100vh;
+  outline-style: solid;
 `;
 export function ShelvesList({
   listOfShelves,
@@ -83,18 +86,23 @@ export function ShelvesList({
         <meta name="description" content="List of user shelves" />
       </Helmet>
       <Div>
-        {Array.isArray(listOfShelves) && listOfShelves.length ? (
-          listOfShelves.map(todo => (
-            <Shelf key={todo.id}>
-              <h2>{todo.name}</h2>
-              <p>
-                <FormattedMessage {...messages.books} />: {todo.books.length}
-              </p>
-            </Shelf>
-          ))
-        ) : (
-          <div>You don’t have any shelves yet</div>
-        )}
+        <GridList cols={3}>
+          {Array.isArray(listOfShelves) && listOfShelves.length ? (
+            listOfShelves.map(todo => (
+              <GridListTile key={todo.id}>
+                <Shelf key={todo.id}>
+                  <h2>{todo.name}</h2>
+                  <p>
+                    <FormattedMessage {...messages.books} />:{' '}
+                    {todo.books.length}
+                  </p>
+                </Shelf>
+              </GridListTile>
+            ))
+          ) : (
+            <div>You don’t have any shelves yet</div>
+          )}
+        </GridList>
         <button
           type="submit"
           onClick={() => onChangeIsOpenAddWindow(!isOpenAddWindow)}

@@ -24,8 +24,9 @@ const LeftArrow = styled.i`
   border-width: 0 3px 3px 0;
   display: inline-block;
   padding: 3px;
-  transform: rotate(135deg);
   -webkit-transform: rotate(135deg);
+  -webkit-transition: var(--transition-speed);
+  transition: var(--transition-speed);
   margin-left: 12px;
   margin-top: 10px;
 `;
@@ -34,7 +35,6 @@ const RigthArrow = styled.i`
   border-width: 0 3px 3px 0;
   display: inline-block;
   padding: 3px;
-  transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
   margin-left: 12px;
   margin-top: 10px;

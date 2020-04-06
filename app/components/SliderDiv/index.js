@@ -34,7 +34,10 @@ const OuterSlider = styled.div`
   // position: absolute;
   float: left;
   margin-right: 3px;
+  transition: width 200ms easy;
+  -webkit-transition: width 1s ease;
 `;
+
 function SliderDiv(props) {
   let content;
 
