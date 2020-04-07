@@ -12,19 +12,23 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 import messages from './messages';
 import { makeSelectListOfBooks } from './selectors';
 import { changeListOfBooks } from './actions';
 
 const Div = styled.div`
   position: relative;
-  left: 45%;
-  width: 100vh;
+  margin: 5vh;
+  width: 95%;
 `;
 
 const Book = styled.div`
-  padding-bottom: 50px;
+  padding: 10px;
+  margin: 10px;
   width: 100vh;
+  border-style: solid;
 `;
 
 export function BookList({ listOfBooks, onChangeListOfBooks }) {
@@ -52,15 +56,19 @@ export function BookList({ listOfBooks, onChangeListOfBooks }) {
         <meta name="description" content="List of books" />
       </Helmet>
       <Div>
-        {listOfBooks.map((todo, index) => (
-          <Book key={todo.id}>
-            <FormattedMessage {...messages.id} />: {index}
-            <h2>{todo.title}</h2>
-            <p>
-              <FormattedMessage {...messages.pages} />: {todo.pages}
-            </p>
-          </Book>
-        ))}
+        <GridList cols={4}>
+          {listOfBooks.map((todo, index) => (
+            <GridListTile key={todo.id}>
+              <Book key={todo.id}>
+                <FormattedMessage {...messages.id} />: {index}
+                <h2>{todo.title}</h2>
+                <p>
+                  <FormattedMessage {...messages.pages} />: {todo.pages}
+                </p>
+              </Book>
+            </GridListTile>
+          ))}
+        </GridList>
       </Div>
     </div>
   );
