@@ -42,7 +42,8 @@ export default function Login() {
         <H1>
           <FormattedMessage {...messages.header} />
         </H1>
-        <a href="http://icgbooks.sq4lea.olsztyn.pl/oauth/login/google">
+        {/* https://python-social-auth.readthedocs.io/en/latest/use_cases.html */}
+        <a href="{ process.env.ICG_API_URL }auth/login/google-oauth2/?next=/">
           <Icon name="google" />
           <Icon name="facebook" />
           <Icon name="twitter" />
