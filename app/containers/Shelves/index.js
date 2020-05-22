@@ -50,9 +50,9 @@ export function ShelvesList({
   };
   useEffect(() => {
     // When initial state username is not null, submit the form to load repos
-    fetch('http://icgbooks.sq4lea.olsztyn.pl/api/shelves', sentData)
+    fetch(`${process.env.ICG_API_URL}/api/v1/shelves/`, sentData)
       .then(resp => resp.json())
-      .then(res => onChangeListOfShelves(res));
+      .then(res => onChangeListOfShelves(res.results));
   }, []);
   const dataPOST = data => ({
     method: 'POST',

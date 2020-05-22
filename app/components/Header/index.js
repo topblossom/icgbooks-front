@@ -51,6 +51,22 @@ const NavButtonRight = styled.div`
 // .active {
 //   background-color: #4CAF50;
 // }
+const header = new Headers({
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+});
+const sentData = {
+  method: 'get',
+  mode: 'cors',
+  credentials: 'include',
+  header,
+};
+function logout() {
+  fetch(`${process.env.ICG_API_URL}/api-auth/logout/`, sentData).then(() =>
+    console.log('logged out'),
+  );
+}
+
 function Header({ isLoggedIn }) {
   return (
     <div>
@@ -72,7 +88,7 @@ function Header({ isLoggedIn }) {
             <LocaleToggle />
           </NavButtonRight>
           <NavButtonRight>
-            <a href="http://icgbooks.sq4lea.olsztyn.pl/logout">
+            <a href="/" onClick={logout}>
               <FormattedMessage {...messages.logout} />
             </a>
           </NavButtonRight>
