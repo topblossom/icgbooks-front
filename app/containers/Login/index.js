@@ -44,7 +44,7 @@ export default function Login() {
         </H1>
         {/* https://python-social-auth.readthedocs.io/en/latest/use_cases.html */}
         <a
-          href={`${process.env.ICG_API_URL}auth/login/google-oauth2/?next=${
+          href={`${process.env.ICG_API_URL}/auth/login/google-oauth2/?next=${
             window.location.href
           }`}
         >

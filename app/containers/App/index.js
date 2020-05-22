@@ -54,10 +54,18 @@ export function App({ onChangeLoginStatus, isLoggedIn }) {
     header,
   };
   useEffect(() => {
-    fetch('http://icgbooks.sq4lea.olsztyn.pl/api/verify', sentData)
-      .then(response => response.json())
-      .then(loginStatus => {
-        onChangeLoginStatus(loginStatus['am i in']);
+    fetch(`${process.env.ICG_API_URL}/api/v1/`, sentData)
+      .then(response => response.status)
+      .then(function(response) {
+        let statusResp;
+        if (response === 200) {
+          statusResp = true;
+          onChangeLoginStatus(statusResp);
+        } else if (response === 403) {
+          statusResp = false;
+          onChangeLoginStatus(statusResp);
+        }
+        return response;
       })
       .catch(error => console.log(error));
   });
