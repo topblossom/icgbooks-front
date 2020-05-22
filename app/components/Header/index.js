@@ -85,6 +85,9 @@ function Header({ isLoggedIn }) {
           <NavLinkLeft to="/login">
             <FormattedMessage {...messages.login} />
           </NavLinkLeft>
+          <NavLinkLeft to="/books">
+            <FormattedMessage {...messages.books} />
+          </NavLinkLeft>
           <NavButtonRight>
             <LocaleToggle />
           </NavButtonRight>

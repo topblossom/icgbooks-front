@@ -44,7 +44,7 @@ export function BookList({ listOfBooks, onChangeListOfBooks }) {
   };
   useEffect(() => {
     // When initial state username is not null, submit the form to load repos
-    fetch('http://icgbooks.sq4lea.olsztyn.pl/api/books', sentData)
+    fetch(`${process.env.ICG_API_URL}api/v1/books/`, sentData)
       .then(resp => resp.json())
       .then(res => onChangeListOfBooks(res));
   }, []);
