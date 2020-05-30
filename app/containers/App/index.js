@@ -105,8 +105,8 @@ App.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.node,
-    }).isRequired,
-  }).isRequired,
+    }),
+  }),
 };
 
 const mapStateToProps = createStructuredSelector({
