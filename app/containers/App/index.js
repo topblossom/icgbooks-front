@@ -14,6 +14,7 @@ import { Switch, Route } from 'react-router-dom';
 import HomePage from 'containers/HomePage/Loadable';
 import BookList from 'containers/BookList/Loadable';
 import ShelvesList from 'containers/Shelves/Loadable';
+import ShelfDetail from 'containers/ShelfDetail/Loadable';
 import Login from 'containers/Login/Loadable';
 import Profile from 'containers/Profile/Loadable';
 import FeaturePage from 'containers/FeaturePage/Loadable';
@@ -85,6 +86,11 @@ export function App({ onChangeLoginStatus, isLoggedIn }) {
         <Route exact path="/login" component={Login} />
         <Route exact path="/profile" component={Profile} />
         <Route path="/features" component={FeaturePage} />
+        <Route
+          exact
+          path="/shelf_detail/:id"
+          component={props => <ShelfDetail shelfId={props.match.params.id} />}
+        />
         <Route path="" component={NotFoundPage} />
       </Switch>
       <Footer />
@@ -96,6 +102,11 @@ export function App({ onChangeLoginStatus, isLoggedIn }) {
 App.propTypes = {
   isLoggedIn: PropTypes.bool,
   onChangeLoginStatus: PropTypes.func,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.node,
+    }).isRequired,
+  }).isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({

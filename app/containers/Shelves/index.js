@@ -14,6 +14,7 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import messages from './messages';
 import {
   makeSelectListOfShelves,
@@ -62,17 +63,17 @@ export function ShelvesList({
       'Content-Type': 'application/json',
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: JSON.stringify({ name: data }),
+    body: JSON.stringify({ title: data }),
   });
 
   function addShelf(event) {
     event.preventDefault();
     fetch(
-      'http://icgbooks.sq4lea.olsztyn.pl/api/shelves/add',
+      `${process.env.ICG_API_URL}/api/v1/shelves/`,
       dataPOST(event.target.newShelf.value),
     )
       .then(() =>
-        fetch('http://icgbooks.sq4lea.olsztyn.pl/api/shelves', sentData)
+        fetch(`${process.env.ICG_API_URL}/api/v1/shelves/`, sentData)
           .then(resp => resp.json())
           .then(res => onChangeListOfShelves(res)),
       )
@@ -90,13 +91,15 @@ export function ShelvesList({
           {Array.isArray(listOfShelves) && listOfShelves.length ? (
             listOfShelves.map(todo => (
               <GridListTile key={todo.id}>
-                <Shelf key={todo.id}>
-                  <h2>{todo.name}</h2>
-                  <p>
-                    <FormattedMessage {...messages.books} />:{' '}
-                    {todo.books.length}
-                  </p>
-                </Shelf>
+                <Link to={{ pathname: `/shelf_detail/${todo.id}` }}>
+                  <Shelf key={todo.id}>
+                    <h2>{todo.title}</h2>
+                    <p>
+                      <FormattedMessage {...messages.books} />:{' '}
+                      {todo.books.length}
+                    </p>
+                  </Shelf>
+                </Link>
               </GridListTile>
             ))
           ) : (

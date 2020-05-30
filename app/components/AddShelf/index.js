@@ -33,7 +33,7 @@ function AddShelfWindow({
   return (
     <ModalWindow>
       <form onSubmit={addShelf}>
-        <div>Repository name</div>
+        <div>Shelf`s name</div>
         <input type="text" name="newShelf" />
         <CloseIcon onClick={() => onChangeIsOpenAddWindow(!isOpenAddWindow)}>
           &times;
