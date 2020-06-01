@@ -7,7 +7,7 @@
 
 // Needed for redux-saga es6 generator support
 import '@babel/polyfill';
-
+import { Route, Switch } from 'react-router'; // react-router v4/v5
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -31,6 +31,7 @@ import configureStore from './configureStore';
 
 // Import i18n messages
 import { translationMessages } from './i18n';
+import CallbackPage from './components/Callback';
 
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)
@@ -52,6 +53,12 @@ const render = messages => {
       <LanguageProvider messages={messages}>
         <ConnectedRouter history={history}>
           <App />
+          <>
+            {/* your usual react-router v4/v5 routing */}
+            <Switch>
+              <Route exact path="/callback" component={CallbackPage} />
+            </Switch>
+          </>
         </ConnectedRouter>
       </LanguageProvider>
     </Provider>,
