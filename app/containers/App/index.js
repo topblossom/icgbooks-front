@@ -9,7 +9,7 @@
 import React, { useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 import HomePage from 'containers/HomePage/Loadable';
 import BookList from 'containers/BookList/Loadable';
@@ -92,7 +92,6 @@ export function App({ onChangeLoginStatus, isLoggedIn }) {
           path="/shelf_detail/:id"
           component={props => <ShelfDetail shelfId={props.match.params.id} />}
         />
-        <Redirect from="/callback" to="/" />
         <Route exact path="/callback" component={CallbackPage} />
         <Route path="" component={NotFoundPage} />
       </Switch>

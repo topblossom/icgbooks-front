@@ -55,12 +55,18 @@ export function ShelvesList({
       .then(resp => resp.json())
       .then(res => onChangeListOfShelves(res.results));
   }, []);
+  const baerer = JSON.parse(
+    sessionStorage.getItem(
+      'oidc.user:https://accounts.google.com:300830512073-9t9kejqik0dppk03q7ll55d8bnih0g2n.apps.googleusercontent.com',
+    ),
+  );
   const dataPOST = data => ({
     method: 'POST',
     mode: 'cors',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer google-oauth2 ${baerer.id_token}`,
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify({ title: data }),
