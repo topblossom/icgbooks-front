@@ -3,6 +3,10 @@
 const express = require('express');
 const logger = require('./logger');
 
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
+
 const argv = require('./argv');
 const port = require('./port');
 const setup = require('./middlewares/frontendMiddleware');
@@ -14,6 +18,15 @@ const ngrok =
 const { resolve } = require('path');
 const app = express();
 
+const options = {
+  key: fs.readFileSync('certs/client-key.pem'),
+  cert: fs.readFileSync('certs/client-cert.pem'),
+};
+
+// Create an HTTP service.
+http.createServer(app).listen(3001);
+// Create an HTTPS service identical to the HTTP service.
+https.createServer(options, app).listen(3002);
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);
 
