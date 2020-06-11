@@ -16,6 +16,7 @@ import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import messages from './messages';
+import userManager from '../../utils/userManager';
 import {
   makeSelectListOfShelves,
   makeSelectIsOpenAddWindow,
@@ -55,18 +56,18 @@ export function ShelvesList({
       .then(resp => resp.json())
       .then(res => onChangeListOfShelves(res.results));
   }, []);
-  const baerer = JSON.parse(
-    sessionStorage.getItem(
-      'oidc.user:https://accounts.google.com:300830512073-9t9kejqik0dppk03q7ll55d8bnih0g2n.apps.googleusercontent.com',
-    ),
-  );
+  let bearer = '0xdeadbeef';
+  userManager.getUser().then(user => {
+    console.log(user.access_token);
+    bearer = user.access_token;
+  });
   const dataPOST = data => ({
     method: 'POST',
     mode: 'cors',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer google-oauth2 ${baerer.id_token}`,
+      Authorization: `Bearer google-oauth2 ${bearer.id_token}`,
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify({ title: data }),
