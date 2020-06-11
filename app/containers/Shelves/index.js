@@ -67,7 +67,7 @@ export function ShelvesList({
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer google-oauth2 ${bearer.id_token}`,
+      Authorization: `Bearer google-oauth2 ${bearer}`,
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify({ title: data }),
