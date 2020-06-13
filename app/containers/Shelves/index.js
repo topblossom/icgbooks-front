@@ -16,7 +16,6 @@ import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import messages from './messages';
-import userManager from '../../utils/userManager';
 import {
   makeSelectListOfShelves,
   makeSelectIsOpenAddWindow,
@@ -39,16 +38,15 @@ export function ShelvesList({
   onChangeListOfShelves,
   isOpenAddWindow,
   onChangeIsOpenAddWindow,
+  token,
 }) {
-  const header = new Headers({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  });
   const sentData = {
     method: 'get',
     mode: 'cors',
-    credentials: 'include',
-    header,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer google-oauth2 ${token}`,
+    },
   };
   useEffect(() => {
     // When initial state username is not null, submit the form to load repos
@@ -56,19 +54,12 @@ export function ShelvesList({
       .then(resp => resp.json())
       .then(res => onChangeListOfShelves(res.results));
   }, []);
-  let bearer = '0xdeadbeef';
-  userManager.getUser().then(user => {
-    console.log(user.access_token);
-    bearer = user.access_token;
-  });
   const dataPOST = data => ({
     method: 'POST',
     mode: 'cors',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer google-oauth2 ${bearer}`,
-      // 'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer google-oauth2 ${token}`,
     },
     body: JSON.stringify({ title: data }),
   });
@@ -82,7 +73,24 @@ export function ShelvesList({
       .then(() =>
         fetch(`${process.env.ICG_API_URL}/api/v1/shelves/`, sentData)
           .then(resp => resp.json())
-          .then(res => onChangeListOfShelves(res)),
+          .then(res => onChangeListOfShelves(res.results)),
+      )
+      .catch(error => error);
+  }
+
+  function deleteShelf(id) {
+    fetch(`${process.env.ICG_API_URL}/api/v1/shelves/${id}/`, {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer google-oauth2 ${token}`,
+      },
+    })
+      .then(() =>
+        fetch(`${process.env.ICG_API_URL}/api/v1/shelves/`, sentData)
+          .then(resp => resp.json())
+          .then(res => onChangeListOfShelves(res.results)),
       )
       .catch(error => error);
   }
@@ -107,6 +115,14 @@ export function ShelvesList({
                     </p>
                   </Shelf>
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    deleteShelf(todo.id);
+                  }}
+                >
+                  Click to delete shelf
+                </button>
               </GridListTile>
             ))
           ) : (
@@ -138,6 +154,7 @@ ShelvesList.propTypes = {
   onChangeListOfShelves: PropTypes.func,
   isOpenAddWindow: PropTypes.bool,
   onChangeIsOpenAddWindow: PropTypes.func,
+  token: PropTypes.string,
 };
 
 const mapStateToProps = createStructuredSelector({

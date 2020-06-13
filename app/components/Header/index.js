@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { makeSelectLoggedIn } from '../../containers/App/selectors';
 import messages from './messages';
+import userManager from '../../utils/userManager';
 
 const NavBar = styled.div`
   list-style-type: none;
@@ -51,20 +52,8 @@ const NavButtonRight = styled.div`
 // .active {
 //   background-color: #4CAF50;
 // }
-const header = new Headers({
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-});
-const sentData = {
-  method: 'get',
-  mode: 'cors',
-  credentials: 'include',
-  header,
-};
 function logout() {
-  fetch(`${process.env.ICG_API_URL}/api-auth/logout/`, sentData).then(() =>
-    console.log('logged out'),
-  );
+  userManager.signoutRedirect();
 }
 
 function Header({ isLoggedIn }) {

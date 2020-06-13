@@ -6,7 +6,7 @@
  * contain code that should be seen on all pages. (e.g. navigation bar)
  */
 
-import React, { useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
@@ -18,6 +18,7 @@ import ShelfDetail from 'containers/ShelfDetail/Loadable';
 import Login from 'containers/Login/Loadable';
 import Profile from 'containers/Profile/Loadable';
 import FeaturePage from 'containers/FeaturePage/Loadable';
+import CallbackPage from 'containers/Callback';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -28,11 +29,11 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import { useInjectReducer } from 'utils/injectReducer';
-import CallbackPage from '../../components/Callback';
 import GlobalStyle from '../../global-styles';
-import { changeLoginStatus } from './actions';
-import { makeSelectLoggedIn } from './selectors';
+import { changeLoginStatus, changeToken } from './actions';
+import { makeSelectLoggedIn, makeSelectToken } from './selectors';
 import reducer from './reducer';
+// import userManager from '../../utils/userManager';
 
 const AppWrapper = styled.div`
   margin: 0 auto;
@@ -43,34 +44,22 @@ const AppWrapper = styled.div`
 
 const key = 'app';
 
-export function App({ onChangeLoginStatus, isLoggedIn }) {
+export function App({ onChangeLoginStatus, isLoggedIn, token, onChangeToken }) {
   useInjectReducer({ key, reducer });
-  const header = new Headers({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  });
-  const sentData = {
-    method: 'get',
-    mode: 'cors',
-    credentials: 'include',
-    header,
-  };
-  useEffect(() => {
-    fetch(`${process.env.ICG_API_URL}/api/v1/`, sentData)
-      .then(response => response.status)
-      .then(function(response) {
-        let statusResp;
-        if (response === 200) {
-          statusResp = true;
-          onChangeLoginStatus(statusResp);
-        } else if (response === 403) {
-          statusResp = false;
-          onChangeLoginStatus(statusResp);
-        }
-        return response;
-      })
-      .catch(error => console.log(error));
-  });
+
+  // useEffect(() => {
+  //   let statusResp;
+  //   const checkIfUserIsLoggedIn = userManager.getUser();
+  //   if (typeof checkIfUserIsLoggedIn.access_token === 'string') {
+  //     onChangeToken(checkIfUserIsLoggedIn.access_token);
+  //     statusResp = true;
+  //     onChangeLoginStatus(statusResp);
+  //   } else {
+  //     statusResp = false;
+  //     onChangeLoginStatus(statusResp);
+  //   }
+  // });
+
   return (
     <AppWrapper>
       <Helmet
@@ -82,8 +71,16 @@ export function App({ onChangeLoginStatus, isLoggedIn }) {
       <Header isLoggedIn={isLoggedIn} />
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route exact path="/books" component={BookList} />
-        <Route exact path="/shelves" component={ShelvesList} />
+        <Route
+          exact
+          path="/books"
+          component={() => <BookList token={token} />}
+        />
+        <Route
+          exact
+          path="/shelves"
+          component={() => <ShelvesList token={token} />}
+        />
         <Route exact path="/login" component={Login} />
         <Route exact path="/profile" component={Profile} />
         <Route path="/features" component={FeaturePage} />
@@ -92,7 +89,16 @@ export function App({ onChangeLoginStatus, isLoggedIn }) {
           path="/shelf_detail/:id"
           component={props => <ShelfDetail shelfId={props.match.params.id} />}
         />
-        <Route exact path="/callback" component={CallbackPage} />
+        <Route
+          exact
+          path="/callback"
+          component={() => (
+            <CallbackPage
+              onChangeLoginStatus={onChangeLoginStatus}
+              onChangeToken={onChangeToken}
+            />
+          )}
+        />
         <Route path="" component={NotFoundPage} />
       </Switch>
       <Footer />
@@ -103,7 +109,9 @@ export function App({ onChangeLoginStatus, isLoggedIn }) {
 
 App.propTypes = {
   isLoggedIn: PropTypes.bool,
+  token: PropTypes.string,
   onChangeLoginStatus: PropTypes.func,
+  onChangeToken: PropTypes.func,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.node,
@@ -113,12 +121,14 @@ App.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   isLoggedIn: makeSelectLoggedIn(),
+  token: makeSelectToken(),
 });
 
 export function mapDispatchToProps(dispatch) {
   return {
     onChangeLoginStatus: loginStatus =>
       dispatch(changeLoginStatus(loginStatus)),
+    onChangeToken: token => dispatch(changeToken(token)),
   };
 }
 
