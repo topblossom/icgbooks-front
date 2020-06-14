@@ -22,6 +22,7 @@ import {
 } from './selectors';
 import { changeListOfShelves, changeIsOpenAddWindow } from './actions';
 import AddShelfWindow from '../../components/AddShelf';
+
 const Div = styled.div`
   position: relative;
   left: 5%;
