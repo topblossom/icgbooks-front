@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import H1 from 'components/H1';
 import Icon from 'components/SVGIcon';
 import BackgroundStyle from 'components/HomePage/Background';
+import userManager from '../../utils/userManager';
 import messages from './messages';
 const Content = styled.div`
   background: rgb(255, 255, 255); /* Fallback color */
@@ -28,6 +29,9 @@ const Content = styled.div`
   text-align: center;
 `;
 export default function Login() {
+  const fun = function() {
+    userManager.signinRedirect();
+  };
   return (
     <div>
       <Helmet>
@@ -52,6 +56,9 @@ export default function Login() {
           <Icon name="facebook" />
           <Icon name="twitter" />
         </a>
+        <button type="button" onClick={fun}>
+          Login but better
+        </button>
       </Content>
     </div>
   );

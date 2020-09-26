@@ -20,6 +20,7 @@ import {
   LOAD_REPOS_SUCCESS,
   LOAD_REPOS_ERROR,
   IS_LOGGED_IN,
+  USER_TOKEN,
 } from './constants';
 
 /**
@@ -67,5 +68,12 @@ export function changeLoginStatus(isLoggedIn) {
   return {
     type: IS_LOGGED_IN,
     isLoggedIn,
+  };
+}
+
+export function changeToken(token) {
+  return {
+    type: USER_TOKEN,
+    token,
   };
 }

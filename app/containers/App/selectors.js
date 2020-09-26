@@ -45,6 +45,12 @@ const makeSelectLoggedIn = () =>
     globalState => globalState.isLoggedIn,
   );
 
+const makeSelectToken = () =>
+  createSelector(
+    selectGlobal,
+    globalState => globalState.token,
+  );
+
 export {
   selectGlobal,
   makeSelectCurrentUser,
@@ -53,4 +59,5 @@ export {
   makeSelectRepos,
   makeSelectLocation,
   makeSelectLoggedIn,
+  makeSelectToken,
 };

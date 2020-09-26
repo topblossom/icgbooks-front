@@ -22,6 +22,7 @@ import {
 } from './selectors';
 import { changeListOfShelves, changeIsOpenAddWindow } from './actions';
 import AddShelfWindow from '../../components/AddShelf';
+
 const Div = styled.div`
   position: relative;
   left: 5%;
@@ -38,16 +39,15 @@ export function ShelvesList({
   onChangeListOfShelves,
   isOpenAddWindow,
   onChangeIsOpenAddWindow,
+  token,
 }) {
-  const header = new Headers({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  });
   const sentData = {
     method: 'get',
     mode: 'cors',
-    credentials: 'include',
-    header,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer google-oauth2 ${token}`,
+    },
   };
   useEffect(() => {
     // When initial state username is not null, submit the form to load repos
@@ -58,10 +58,9 @@ export function ShelvesList({
   const dataPOST = data => ({
     method: 'POST',
     mode: 'cors',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      // 'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer google-oauth2 ${token}`,
     },
     body: JSON.stringify({ title: data }),
   });
@@ -75,7 +74,24 @@ export function ShelvesList({
       .then(() =>
         fetch(`${process.env.ICG_API_URL}/api/v1/shelves/`, sentData)
           .then(resp => resp.json())
-          .then(res => onChangeListOfShelves(res)),
+          .then(res => onChangeListOfShelves(res.results)),
+      )
+      .catch(error => error);
+  }
+
+  function deleteShelf(id) {
+    fetch(`${process.env.ICG_API_URL}/api/v1/shelves/${id}/`, {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer google-oauth2 ${token}`,
+      },
+    })
+      .then(() =>
+        fetch(`${process.env.ICG_API_URL}/api/v1/shelves/`, sentData)
+          .then(resp => resp.json())
+          .then(res => onChangeListOfShelves(res.results)),
       )
       .catch(error => error);
   }
@@ -100,6 +116,14 @@ export function ShelvesList({
                     </p>
                   </Shelf>
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    deleteShelf(todo.id);
+                  }}
+                >
+                  Click to delete shelf
+                </button>
               </GridListTile>
             ))
           ) : (
@@ -131,6 +155,7 @@ ShelvesList.propTypes = {
   onChangeListOfShelves: PropTypes.func,
   isOpenAddWindow: PropTypes.bool,
   onChangeIsOpenAddWindow: PropTypes.func,
+  token: PropTypes.string,
 };
 
 const mapStateToProps = createStructuredSelector({

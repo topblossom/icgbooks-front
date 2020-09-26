@@ -13,6 +13,7 @@ import {
   LOAD_REPOS,
   LOAD_REPOS_ERROR,
   IS_LOGGED_IN,
+  USER_TOKEN,
 } from './constants';
 
 // The initial state of the App
@@ -21,6 +22,7 @@ export const initialState = {
   error: false,
   currentUser: false,
   isLoggedIn: false,
+  token: '',
   userData: {
     repositories: false,
   },
@@ -49,6 +51,10 @@ const appReducer = (state = initialState, action) =>
 
       case IS_LOGGED_IN:
         draft.isLoggedIn = action.isLoggedIn;
+        break;
+
+      case USER_TOKEN:
+        draft.token = action.token;
         break;
     }
   });

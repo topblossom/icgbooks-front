@@ -17,6 +17,8 @@ import GridListTile from '@material-ui/core/GridListTile';
 import messages from './messages';
 import { makeSelectListOfBooks } from './selectors';
 import { changeListOfBooks } from './actions';
+import { makeSelectListOfShelves } from '../Shelves/selectors';
+import { changeListOfShelves } from '../Shelves/actions';
 
 const Div = styled.div`
   position: relative;
@@ -31,23 +33,36 @@ const Book = styled.div`
   border-style: solid;
 `;
 
-export function BookList({ listOfBooks, onChangeListOfBooks }) {
-  const header = new Headers({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  });
+export function BookList({
+  listOfBooks,
+  onChangeListOfBooks,
+  token,
+  onChangeListOfShelves,
+  listOfShelves,
+}) {
   const sentData = {
     method: 'get',
     mode: 'cors',
-    credentials: 'include',
-    header,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer google-oauth2 ${token}`,
+    },
   };
   useEffect(() => {
     // When initial state username is not null, submit the form to load repos
     fetch(`${process.env.ICG_API_URL}/api/v1/books/`, sentData)
       .then(resp => resp.json())
       .then(res => onChangeListOfBooks(res.results));
+
+    fetch(`${process.env.ICG_API_URL}/api/v1/shelves/`, sentData)
+      .then(resp => resp.json())
+      .then(res => onChangeListOfShelves(res.results));
   }, []);
+
+  function addToShelf(id) {
+    // TODO
+    console.log(id);
+  }
 
   return (
     <div>
@@ -65,6 +80,18 @@ export function BookList({ listOfBooks, onChangeListOfBooks }) {
                 <p>
                   <FormattedMessage {...messages.pages} />: {todo.pages}
                 </p>
+                <div>
+                  <div>Add to shelf</div>
+                  {listOfShelves.map(shelf => (
+                    <button
+                      key={shelf.id}
+                      type="button"
+                      onClick={() => addToShelf(shelf.id)}
+                    >
+                      {shelf.title}
+                    </button>
+                  ))}
+                </div>
               </Book>
             </GridListTile>
           ))}
@@ -76,17 +103,23 @@ export function BookList({ listOfBooks, onChangeListOfBooks }) {
 
 BookList.propTypes = {
   listOfBooks: PropTypes.array,
+  listOfShelves: PropTypes.array,
   onChangeListOfBooks: PropTypes.func,
+  onChangeListOfShelves: PropTypes.func,
+  token: PropTypes.string,
 };
 
 const mapStateToProps = createStructuredSelector({
   listOfBooks: makeSelectListOfBooks(),
+  listOfShelves: makeSelectListOfShelves(),
 });
 
 export function mapDispatchToProps(dispatch) {
   return {
     onChangeListOfBooks: listOfBooks =>
       dispatch(changeListOfBooks(listOfBooks)),
+    onChangeListOfShelves: listOfBooks =>
+      dispatch(changeListOfShelves(listOfBooks)),
   };
 }
 

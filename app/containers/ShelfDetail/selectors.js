@@ -13,4 +13,10 @@ const makeSelectListOfBooksInShelf = () =>
     globalState => globalState.listOfBooksInShelf,
   );
 
-export { makeSelectListOfBooksInShelf };
+const makeSelectShelfName = () =>
+  createSelector(
+    selectGlobal,
+    globalState => globalState.shelfName,
+  );
+
+export { makeSelectListOfBooksInShelf, makeSelectShelfName };

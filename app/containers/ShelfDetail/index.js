@@ -11,8 +11,10 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
-import { makeSelectListOfBooksInShelf } from './selectors';
-import { changeListOfBooksInShelf } from './actions';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { makeSelectListOfBooksInShelf, makeSelectShelfName } from './selectors';
+import { changeListOfBooksInShelf, changeShelfName } from './actions';
 import BookFromShelf from '../../components/BookfromShelf';
 
 const Div = styled.div`
@@ -21,10 +23,18 @@ const Div = styled.div`
   width: 90%;
 `;
 
+const EditableField = styled.div`
+  border-bottom: 1px solid black;
+  width: 100%;
+  height: 100px;
+`;
+
 export function ShelfDetail({
   listOfBooksInShelf,
   onChangeListOfBooksInShelf,
   shelfId,
+  onChangeShelfName,
+  shelfName,
 }) {
   const header = new Headers({
     'Access-Control-Allow-Origin': '*',
@@ -41,7 +51,10 @@ export function ShelfDetail({
     // When initial state username is not null, submit the form to load repos
     fetch(`${process.env.ICG_API_URL}/api/v1/shelves/${shelfId}/`, sentData)
       .then(res => res.json())
-      .then(res => onChangeListOfBooksInShelf(res.books));
+      .then(res => {
+        onChangeListOfBooksInShelf(res.books);
+        onChangeShelfName(res.title);
+      });
   }, []);
 
   return (
@@ -51,6 +64,9 @@ export function ShelfDetail({
         <meta name="description" content="details of user's shelf" />
       </Helmet>
       <Div>
+        <EditableField>
+          {shelfName} <FontAwesomeIcon icon={faPencilAlt} />
+        </EditableField>
         {Array.isArray(listOfBooksInShelf) ? (
           listOfBooksInShelf.map(todo => (
             <BookFromShelf key={todo} bookID={todo} />
@@ -67,16 +83,20 @@ ShelfDetail.propTypes = {
   listOfBooksInShelf: PropTypes.array,
   onChangeListOfBooksInShelf: PropTypes.func,
   shelfId: PropTypes.string,
+  shelfName: PropTypes.string,
+  onChangeShelfName: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   listOfBooksInShelf: makeSelectListOfBooksInShelf(),
+  shelfName: makeSelectShelfName(),
 });
 
 export function mapDispatchToProps(dispatch) {
   return {
     onChangeListOfBooksInShelf: listOfBooksInShelf =>
       dispatch(changeListOfBooksInShelf(listOfBooksInShelf)),
+    onChangeShelfName: shelfName => dispatch(changeShelfName(shelfName)),
   };
 }
 
