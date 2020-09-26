@@ -8,9 +8,9 @@ import { defineMessages } from 'react-intl';
 export const scope = 'boilerplate.components.BookList';
 
 export default defineMessages({
-  id: {
-    id: `${scope}.id`,
-    defaultMessage: 'ID',
+  number: {
+    id: `${scope}.number`,
+    defaultMessage: 'No.',
   },
   pages: {
     id: `${scope}.pages`,

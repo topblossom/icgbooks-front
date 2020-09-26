@@ -12,25 +12,48 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
+import Grid from '@material-ui/core/Grid';
+import Icon from 'components/SVGIcon';
 import messages from './messages';
 import { makeSelectListOfBooks } from './selectors';
 import { changeListOfBooks } from './actions';
 import { makeSelectListOfShelves } from '../Shelves/selectors';
 import { changeListOfShelves } from '../Shelves/actions';
+import BookIcon from '../../images/icon-book.png';
 
 const Div = styled.div`
   position: relative;
-  margin: 5vh;
+  margin: auto;
   width: 95%;
+`;
+
+const GridStyle = styled(Grid)`
+  // background-color: #ffe6e6;
+  // border: none;
 `;
 
 const Book = styled.div`
   padding: 10px;
   margin: 10px;
-  width: 100vh;
-  border-style: solid;
+  width: 100%;
+  // max-width: 700px;
+  height: 600px;
+  background-color: #ffe6e6;
+  // border-style: solid;
+  border-radius: 25px;
+  box-shadow: 10px 12px 14px -8px rgba(0, 0, 0, 0.52);
+`;
+
+const ImageBook = styled.img`
+  width: 70%;
+  height: auto;
+  max-height: 50%;
+  display: block;
+  margin: auto;
+`;
+
+const H2 = styled.h2`
+  text-align: center;
 `;
 
 export function BookList({
@@ -71,12 +94,26 @@ export function BookList({
         <meta name="description" content="List of books" />
       </Helmet>
       <Div>
-        <GridList cols={4}>
+        <Grid container>
           {listOfBooks.map((todo, index) => (
-            <GridListTile key={todo.id}>
+            <GridStyle
+              container
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              lg={3}
+              // spacing={3}
+              direction="row"
+              justify="center"
+              alignItems="center"
+              key={todo.id}
+            >
               <Book key={todo.id}>
-                <FormattedMessage {...messages.id} />: {index}
-                <h2>{todo.title}</h2>
+                <Icon name="vertical3dots" />
+                <FormattedMessage {...messages.number} /> {index}
+                <ImageBook src={BookIcon} />
+                <H2>{todo.title}</H2>
                 <p>
                   <FormattedMessage {...messages.pages} />: {todo.pages}
                 </p>
@@ -93,9 +130,9 @@ export function BookList({
                   ))}
                 </div>
               </Book>
-            </GridListTile>
+            </GridStyle>
           ))}
-        </GridList>
+        </Grid>
       </Div>
     </div>
   );
