@@ -13,6 +13,7 @@ import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import Grid from '@material-ui/core/Grid';
 import { makeSelectListOfBooksInShelf, makeSelectShelfName } from './selectors';
 import { changeListOfBooksInShelf, changeShelfName } from './actions';
 import BookFromShelf from '../../components/BookfromShelf';
@@ -35,16 +36,16 @@ export function ShelfDetail({
   shelfId,
   onChangeShelfName,
   shelfName,
+  token,
 }) {
-  const header = new Headers({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  });
   const sentData = {
     method: 'get',
     mode: 'cors',
     credentials: 'include',
-    header,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer google-oauth2 ${token}`,
+    },
   };
 
   useEffect(() => {
@@ -67,13 +68,15 @@ export function ShelfDetail({
         <EditableField>
           {shelfName} <FontAwesomeIcon icon={faPencilAlt} />
         </EditableField>
-        {Array.isArray(listOfBooksInShelf) ? (
-          listOfBooksInShelf.map(todo => (
-            <BookFromShelf key={todo} bookID={todo} />
-          ))
-        ) : (
-          <div>error{listOfBooksInShelf}</div>
-        )}
+        <Grid container>
+          {Array.isArray(listOfBooksInShelf) ? (
+            listOfBooksInShelf.map(todo => (
+              <BookFromShelf key={todo} bookID={todo} token={token} />
+            ))
+          ) : (
+            <div>error{listOfBooksInShelf}</div>
+          )}
+        </Grid>
       </Div>
     </div>
   );
@@ -85,6 +88,7 @@ ShelfDetail.propTypes = {
   shelfId: PropTypes.string,
   shelfName: PropTypes.string,
   onChangeShelfName: PropTypes.func,
+  token: PropTypes.string,
 };
 
 const mapStateToProps = createStructuredSelector({

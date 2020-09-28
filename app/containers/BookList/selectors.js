@@ -13,4 +13,10 @@ const makeSelectListOfBooks = () =>
     globalState => globalState.listOfBooks,
   );
 
-export { makeSelectListOfBooks };
+const makeSelectIsOptionOpen = () =>
+  createSelector(
+    selectGlobal,
+    globalState => globalState.isOptionOpen,
+  );
+
+export { makeSelectListOfBooks, makeSelectIsOptionOpen };

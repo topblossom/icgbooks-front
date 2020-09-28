@@ -14,9 +14,10 @@ import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
 import Icon from 'components/SVGIcon';
+import { Button } from '@material-ui/core';
 import messages from './messages';
-import { makeSelectListOfBooks } from './selectors';
-import { changeListOfBooks } from './actions';
+import { makeSelectListOfBooks, makeSelectIsOptionOpen } from './selectors';
+import { changeListOfBooks, changeIsOptionOpen } from './actions';
 import { makeSelectListOfShelves } from '../Shelves/selectors';
 import { changeListOfShelves } from '../Shelves/actions';
 import BookIcon from '../../images/icon-book.png';
@@ -56,12 +57,28 @@ const H2 = styled.h2`
   text-align: center;
 `;
 
+const ModalWindow = styled.div`
+  width: 200px;
+  height: 200px;
+  background-color: white;
+  position: absolute;
+  overflow: auto;
+  overflow-x: hidden;
+`;
+
+const ModalButton = styled(Button)`
+  width: 100%;
+  border: 2px solid #000000;
+`;
+
 export function BookList({
   listOfBooks,
   onChangeListOfBooks,
   token,
   onChangeListOfShelves,
   listOfShelves,
+  isOptionOpen,
+  onChangeIsOptionOpen,
 }) {
   const sentData = {
     method: 'get',
@@ -82,9 +99,34 @@ export function BookList({
       .then(res => onChangeListOfShelves(res.results));
   }, []);
 
-  function addToShelf(id) {
-    // TODO
-    console.log(id);
+  async function booksInShelf(shelfId) {
+    const response = await fetch(
+      `${process.env.ICG_API_URL}/api/v1/shelves/${shelfId}/`,
+      sentData,
+    );
+    const json = await response.json();
+
+    return json;
+  }
+
+  async function addToShelf(shelfId, bookId) {
+    const shelfDetails = await booksInShelf(shelfId);
+    shelfDetails.books.push(bookId);
+    console.log(shelfDetails);
+    const sentDataPut = {
+      method: 'PUT',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer google-oauth2 ${token}`,
+      },
+      body: JSON.stringify({
+        books: shelfDetails.books,
+        title: shelfDetails.title,
+      }),
+    };
+
+    fetch(`${process.env.ICG_API_URL}/api/v1/shelves/${shelfId}/`, sentDataPut);
   }
 
   return (
@@ -110,25 +152,41 @@ export function BookList({
               key={todo.id}
             >
               <Book key={todo.id}>
-                <Icon name="vertical3dots" />
+                <Button
+                  type="submit"
+                  onClick={() => {
+                    let temp;
+                    if (index === isOptionOpen) {
+                      temp = -1;
+                    } else {
+                      temp = index;
+                    }
+                    onChangeIsOptionOpen(temp);
+                  }}
+                >
+                  <Icon name="vertical3dots" />
+                </Button>
+                {isOptionOpen === index ? (
+                  <ModalWindow>
+                    {listOfShelves.map(shelf => (
+                      <ModalButton
+                        key={shelf.id}
+                        type="button"
+                        onClick={() => addToShelf(shelf.id, todo.id)}
+                      >
+                        {shelf.title}
+                      </ModalButton>
+                    ))}
+                  </ModalWindow>
+                ) : (
+                  <span />
+                )}
                 <FormattedMessage {...messages.number} /> {index}
                 <ImageBook src={BookIcon} />
                 <H2>{todo.title}</H2>
                 <p>
                   <FormattedMessage {...messages.pages} />: {todo.pages}
                 </p>
-                <div>
-                  <div>Add to shelf</div>
-                  {listOfShelves.map(shelf => (
-                    <button
-                      key={shelf.id}
-                      type="button"
-                      onClick={() => addToShelf(shelf.id)}
-                    >
-                      {shelf.title}
-                    </button>
-                  ))}
-                </div>
               </Book>
             </GridStyle>
           ))}
@@ -144,11 +202,14 @@ BookList.propTypes = {
   onChangeListOfBooks: PropTypes.func,
   onChangeListOfShelves: PropTypes.func,
   token: PropTypes.string,
+  isOptionOpen: PropTypes.number,
+  onChangeIsOptionOpen: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   listOfBooks: makeSelectListOfBooks(),
   listOfShelves: makeSelectListOfShelves(),
+  isOptionOpen: makeSelectIsOptionOpen(),
 });
 
 export function mapDispatchToProps(dispatch) {
@@ -157,6 +218,8 @@ export function mapDispatchToProps(dispatch) {
       dispatch(changeListOfBooks(listOfBooks)),
     onChangeListOfShelves: listOfBooks =>
       dispatch(changeListOfShelves(listOfBooks)),
+    onChangeIsOptionOpen: isOptionOpen =>
+      dispatch(changeIsOptionOpen(isOptionOpen)),
   };
 }
 

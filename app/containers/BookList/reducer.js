@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { LIST_OF_BOOKS } from './constants';
+import { LIST_OF_BOOKS, IS_OPTION_OPEN } from './constants';
 
 // The initial state of the App
 export const initialState = {
@@ -9,8 +9,14 @@ export const initialState = {
 /* eslint-disable default-case, no-param-reassign */
 const booksListReducer = (state = initialState, action) =>
   produce(state, draft => {
-    if (action.type === LIST_OF_BOOKS) {
-      draft.listOfBooks = action.listOfBooks;
+    switch (action.type) {
+      case LIST_OF_BOOKS:
+        draft.listOfBooks = action.listOfBooks;
+        break;
+
+      case IS_OPTION_OPEN:
+        draft.isOptionOpen = action.isOptionOpen;
+        break;
     }
   });
 

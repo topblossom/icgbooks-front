@@ -1,47 +1,88 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import Grid from '@material-ui/core/Grid';
+import messages from '../../containers/BookList/messages';
+import BookIcon from '../../images/icon-book.png';
 
-const Book = styled.div`
-  display: block;
+const GridStyle = styled(Grid)`
+  // background-color: #ffe6e6;
+  // border: none;
 `;
 
-function BookFromShelf({ bookID }) {
-  const header = new Headers({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  });
+const Book = styled.div`
+  padding: 10px;
+  margin: 10px;
+  width: 100%;
+  // max-width: 700px;
+  height: 600px;
+  background-color: #ffe6e6;
+  // border-style: solid;
+  border-radius: 25px;
+  box-shadow: 10px 12px 14px -8px rgba(0, 0, 0, 0.52);
+`;
+
+const ImageBook = styled.img`
+  width: 70%;
+  height: auto;
+  max-height: 50%;
+  display: block;
+  margin: auto;
+`;
+
+const H2 = styled.h2`
+  text-align: center;
+`;
+
+function BookFromShelf({ bookID, token }) {
   const sentData = {
     method: 'get',
     mode: 'cors',
     credentials: 'include',
-    header,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer google-oauth2 ${token}`,
+    },
   };
-  const [book, setBook] = useState();
+  const [book, setBook] = useState({ title: null, pages: null });
+
   useEffect(() => {
-    // When initial state username is not null, submit the form to load repos
     fetch(`${process.env.ICG_API_URL}/api/v1/books/${bookID}/`, sentData)
       .then(res => res.json())
       .then(res => setBook(res));
   }, []);
 
+  console.log(book);
   return (
-    <div>
-      {bookID}
-      {book ? (
-        <Book>
-          {book.title}
-          <div>{book.pages}</div>
-        </Book>
-      ) : (
-        <div>problem</div>
-      )}
-    </div>
+    <GridStyle
+      container
+      item
+      xs={12}
+      sm={6}
+      md={4}
+      lg={3}
+      // spacing={3}
+      direction="row"
+      justify="center"
+      alignItems="center"
+      key={bookID}
+    >
+      <Book key={bookID}>
+        <ImageBook src={BookIcon} />
+        <H2>{book.title ? book.title : 'Error'}</H2>
+        <p>
+          <FormattedMessage {...messages.pages} />:{' '}
+          {book.pages ? book.pages : 'Error'}
+        </p>
+      </Book>
+    </GridStyle>
   );
 }
 
 BookFromShelf.propTypes = {
   bookID: PropTypes.number,
+  token: PropTypes.string,
 };
 
 export default BookFromShelf;

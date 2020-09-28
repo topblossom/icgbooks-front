@@ -87,7 +87,9 @@ export function App({ onChangeLoginStatus, isLoggedIn, token, onChangeToken }) {
         <Route
           exact
           path="/shelf_detail/:id"
-          component={props => <ShelfDetail shelfId={props.match.params.id} />}
+          component={props => (
+            <ShelfDetail shelfId={props.match.params.id} token={token} />
+          )}
         />
         <Route
           exact
